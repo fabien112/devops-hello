@@ -117,4 +117,5 @@ npm run dev
 
 Voir le guide pas à pas : [`docs/CI-CD-PAS-A-PAS.md`](docs/CI-CD-PAS-A-PAS.md)
 
-**Étape 1 (en cours)** : CI GitHub Actions (tests backend + build frontend) → pousser sur GitHub et vérifier l’onglet Actions.
+**Étape 2 (en cours)** : build + push images `devops-backend` / `devops-frontend` vers **GHCR**.  
+Guide : [`docs/CI-CD-PAS-A-PAS.md`](docs/CI-CD-PAS-A-PAS.md)

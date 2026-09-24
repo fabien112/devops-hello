@@ -2,41 +2,55 @@
 
 Ce document suit la formation étape par étape.
 
-## Étape 1 — CI GitHub Actions (fait)
+## Étape 1 — CI GitHub Actions ✅
 
-Fichier : `.github/workflows/ci.yml`
+Workflow : tests Maven (backend) + build Vue (frontend).
 
-À chaque push / PR sur `main` ou `master` :
+Résultat attendu : jobs verts dans l’onglet **Actions**.
 
-1. lance les tests Maven du **backend**
-2. build le **frontend** Vue
+## Étape 2 — Push images Docker vers GHCR (en cours)
 
-Pas encore de build/push d’images Docker.
+Fichier : `.github/workflows/ci-cd.yml`
+
+Après les tests réussis (push sur `main` uniquement) :
+
+1. login sur `ghcr.io` avec `GITHUB_TOKEN`
+2. build & push `devops-backend` (`latest` + SHA)
+3. build & push `devops-frontend` (`latest` + SHA)
+
+Postgres reste l’image officielle `postgres:16-alpine` (pas de push).
 
 ### Ce que tu dois faire maintenant
 
-1. Créer un dépôt vide sur GitHub (ex. `devops-hello`)
-2. Dans PowerShell, à la racine du projet :
+1. Commit + push du nouveau workflow :
 
 ```powershell
 git add .
-git commit -m "chore: initialisation projet DevOps (backend, frontend, database, CI)"
-git branch -M main
-git remote add origin https://github.com/<TON_USER>/devops-hello.git
-git push -u origin main
+git commit -m "ci: ajouter build et push des images Docker vers GHCR"
+git push
 ```
 
-3. Onglet **Actions** du dépôt GitHub → vérifier que le workflow **CI** est vert
+2. Onglet **Actions** → workflow **CI/CD** → le job **Docker — Build & Push GHCR** doit être vert
 
-Quand c’est OK, dis-le : on passe à l’**Étape 2** (build + push images vers GHCR).
+3. Vérifier les packages :
+   - GitHub → ton profil → **Packages**
+   - ou : `https://github.com/fabien112?tab=packages`
+   - tu dois voir `devops-backend` et `devops-frontend`
 
-## Étape 2 — Push images Docker vers GHCR (à venir)
+4. (Recommandé) Rendre les packages **Public** :
+   - Package → **Package settings** → **Change visibility** → Public  
+   Sinon `docker pull` demandera une authentification.
 
-- login `ghcr.io` avec `GITHUB_TOKEN`
-- build `devops-backend` et `devops-frontend`
-- push avec tags `latest` + SHA du commit
+### Tirer une image en local (après push)
 
-## Étape 3 — Déploiement (plus tard)
+```powershell
+docker pull ghcr.io/fabien112/devops-backend:latest
+docker pull ghcr.io/fabien112/devops-frontend:latest
+```
 
-- tirer les images GHCR
-- lancer postgres + backend + frontend (Compose ou Kubernetes)
+Quand c’est OK, dis-le : on passe à l’**Étape 3** (déploiement avec ces images GHCR).
+
+## Étape 3 — Déploiement (à venir)
+
+- adapter `docker-compose` pour tirer les images GHCR
+- lancer postgres + backend + frontend
